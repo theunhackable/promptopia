@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google'; 
+import GoogleProvider from 'next-auth/providers/google';
+
 import User from '@app/models/user';
 import { connectToDB } from '@utils/database';
 
@@ -29,12 +30,13 @@ const handler = NextAuth({
         if (!userExists) {
           await User.create({
             email: profile.email,
-            username: profile.name.replace(" ", "").toLowerCase() || "test1",
+            // to avoid error during validation in database remove spaces
+            username: profile.name.replace(" ", "").toLowerCase(),
             image: profile.picture,
           });
         }
 
-        return true
+        return true;
       } catch (error) {
         console.log("Error checking if user exists: ", error.message);
         return false
