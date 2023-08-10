@@ -25,6 +25,7 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchPosts = async () => {
     const response = await fetch("/api/prompt");
@@ -34,7 +35,9 @@ const Feed = () => {
   };
 
   useEffect(async() => {
+    setLoading(true)
     await fetchPosts();
+    setLoading(false)
   }, []);
 
   const filterPrompts = (searchtext) => {
@@ -56,7 +59,7 @@ const Feed = () => {
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
         setSearchedResults(searchResult);
-      }, 500)
+      }, 1000)
     );
   };
 
@@ -79,7 +82,11 @@ const Feed = () => {
           className='search_input peer'
         />
       </form>
-
+      {loading &&(
+        <div className='animate-ping'>
+          Loading ... 
+        </div>
+      )}
       {/* All Prompts */}
       {searchText ? (
         <PromptCardList
